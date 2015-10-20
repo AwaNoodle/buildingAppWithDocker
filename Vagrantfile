@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 $update = <<END
-	sudo apt-get Update	
-	sudo apt-get upgrade -y 
+	sudo apt-get Update
+	sudo apt-get upgrade -y
 END
 
 # Update to the latest Docker
@@ -12,12 +12,12 @@ $installLatestDocker = <<END
      echo 'Docker already installed'
    else
      curl -sSL https://get.docker.com/ | sh
-	   usermod -aG docker vagrant 
+	   usermod -aG docker vagrant
    fi
 END
 
 $pullDemoContainers = <<END
-    
+
 END
 
 $runRegistry = <<END
@@ -33,7 +33,8 @@ END
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
-  
+	config.vm.post_up_message = "Project files will be available at /vagrant on the VM"
+
   config.vm.provider "virtualbox" do |vb|
      # Customize the amount of memory on the VM:
      vb.memory = "1024"
