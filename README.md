@@ -70,11 +70,32 @@ You can learn about more Docker's keywords here **ADD LINK!**.
 now we've created the Dockerfile we need to build it and then use it. Inside of your VM, move you the folder containing the exercise. We then need to tell Docker to build the image:
 
 ```bash
-cd /vagrant/exercises/exercise1
-docker build -t mynginx .
+> cd /vagrant/exercises/exercise1
+> docker build -t mynginx .
 ```
 
 We've told Docker to:
 - **build** : Tells Docker that it needs to build the supplied dockerfile
 - **-t mynginx** : Tells Docker to tag the resulting image, in this case with mynginx. This is the name we will use to start the image
 - **.** : The path to look at for the dockerfile to build
+
+Once the build has completed, we can look in the images list, and see our new image (and it's base image):
+
+```bash
+> docker images
+REPOSITORY                    TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+mynginx				                latest              1da448d0e9de        1 hour ago         	8.4 MB
+kitematic/hello-world-nginx   latest              fa9a3bb406d3        4 months ago        7.913 MB
+```
+
+We can now start up our container:
+
+```bash
+> docker run -d -p 9123:80 --name testingChanges mynginx
+mynginx
+```
+
+From the host machine, navigate to (http://localhost:9123) and you should see your new site.
+
+
+### Exercise 2 - Creating a API with Node.JS and Docker
