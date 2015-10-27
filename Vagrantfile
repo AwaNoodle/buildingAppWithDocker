@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 $update = <<END
-	sudo apt-get Update
+	sudo apt-get update
 	sudo apt-get upgrade -y
 END
 
@@ -11,7 +11,11 @@ $installLatestDocker = <<END
 	 if hash docker 2>/dev/null; then
      echo 'Docker already installed'
    else
-     curl -sSL https://get.docker.com/ | sh
+		 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+		 echo deb https://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
+		 apt-get update
+		 apt-get purge lxc-docker*
+     sudo apt-get install docker-engine -y
 	   usermod -aG docker vagrant
    fi
 END
@@ -36,12 +40,11 @@ Vagrant.configure(2) do |config|
 	config.vm.post_up_message = "Project files will be available at /vagrant on the VM"
 
   config.vm.provider "virtualbox" do |vb|
-     # Customize the amount of memory on the VM:
      vb.memory = "1024"
   end
 
 	# nginx
-  config.vm.network "forwarded_port", guest: 80, host: 9123
+  config.vm.network "forwarded_port", guest: 9123, host: 9123
 
   # Registry
   config.vm.network "forwarded_port", guest: 5000, host: 5000
