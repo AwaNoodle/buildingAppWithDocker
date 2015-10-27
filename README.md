@@ -33,7 +33,7 @@ For all exercises, you will need to remote into the virtual machine created by V
 > vagrant ssh
 ```
 
-### Exercise 1 - Adding Static Data to Existing container
+### Exercise 1 - Adding Static Data using an Existing Image
 
 A simple usage we might have for Docker is to provide some static content all bundled up which a mechanism for displaying it.
 
