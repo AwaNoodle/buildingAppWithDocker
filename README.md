@@ -39,9 +39,9 @@ A simple usage we might have for Docker is to provide some static content all bu
 
 For this exercise, we are going to use the **Kitematic/hello-world-nginx** container to serve up some static content that we supply. What we will do is pull in the **hello-world-nginx** image as a base and then override the files that it was originally serving and supply our own. It's useful to know what the base image is doing so the Dockerfile that produced the **Kitematic/hello-world-nginx** image is supplied in (exercises/exercise1/reference/dockerfile). In this file, we can see that the image exposes a mount point at **/website_files** and can make an assumption that this is the location nginx is service files from:
 
-'''
+```
 VOLUME ["/website_files"]
-'''
+```
 
 We are going to place our own content in this location. Firstly create a new folder for your project. Inside, create a **content** folder and add a **index.html** file:
 
