@@ -43,7 +43,15 @@ For this exercise, we are going to use the **Kitematic/hello-world-nginx** conta
 VOLUME ["/website_files"]
 '''
 
-We are going to place our own content in this location. Inside the **content** folder is an **index.html** file. Lets modify **index.html** so that it shows something simple:
+We are going to place our own content in this location. Firstly create a new folder for your project. Inside, create a **content** folder and add a **index.html** file:
+
+```bash
+> cd /vagrant
+> mkdir -p project1/content
+> touch project1/content/index.html
+```
+
+You will be able to see the project folder on your host or your VM. Open **index.html** in an editor. Lets modify **index.html** so that it shows something simple:
 
 ```html
 <body>
@@ -51,7 +59,7 @@ We are going to place our own content in this location. Inside the **content** f
 </body>
 ```
 
-Now we need a Dockerfile to tell Docker what base we are going to use and that we want to add in our files. Create a new file called **dockerfile** (no extension) and place it in the root of the **excercise1** (you can do this on your host machine if you prefer). Add the following content:
+Now we need a Dockerfile to tell Docker what base we are going to use and that we want to add in our files. Create a new file called **Dockerfile** (no extension) and place it in the root of the project. Add the following content:
 
 ```
 FROM kitematic/hello-world-nginx
@@ -65,19 +73,21 @@ The **FROM** keyword instructs Docker to locate the image specified, and use it 
 
 The **ADD** keyword is telling Docker to bring in files at the specified location and add a layer to our image with these files. The layer added will roughly be the size of the files added. As it is a layer, and layers are immutable, these files will always be part of the full image. Even if we were to delete the files in a subsequent command, the layer and therefor the files would still be brought down and included, you just would be able to access them from layers after they were deleted. The Dockerfile can be viewed as creating a series of states which we view at the end as the culmination of all of the changes.
 
-You can learn about more Docker's keywords here **ADD LINK!**.
+You can learn about more Docker's keywords [here](https://docs.docker.com/reference/builder/).
 
-now we've created the Dockerfile we need to build it and then use it. Inside of your VM, move you the folder containing the exercise. We then need to tell Docker to build the image:
+Now we've created the Dockerfile we need to build it and then use it. Inside of your VM, move you the folder containing the exercise. We then need to tell Docker to build the image:
 
 ```bash
-> cd /vagrant/exercises/exercise1
+> cd /vagrant/project1
 > docker build -t mynginx .
 ```
 
 We've told Docker to:
-- **build** : Tells Docker that it needs to build the supplied dockerfile
+- **build** : Tells Docker that it needs to build the supplied Dockerfile
 - **-t mynginx** : Tells Docker to tag the resulting image, in this case with mynginx. This is the name we will use to start the image
-- **.** : The path to look at for the dockerfile to build
+- **.** : The path to look at for the Dockerfile to build
+
+![Exercise 1 Demo](/exercises/exercise1/demoA.gif)
 
 Once the build has completed, we can look in the images list, and see our new image (and it's base image):
 
@@ -97,5 +107,28 @@ mynginx
 
 From the host machine, navigate to (http://localhost:9123) and you should see your new site.
 
+![Exercise 1 Demo](/exercises/exercise1/demoB.gif)
 
 ### Exercise 2 - Creating a API with Node.JS and Docker
+
+For this exercise we are going to create a new application and host it in a container. We will use Node.JS and Express.JS to create a simple API.
+
+Normally, we would need to have provisioned a machine with Node to be able to run the application. We could do a similar process with Docker by taking a Linux base, like Busybox, an adding Node and then our application. More likely, we will choose one of the pre-built Node images and avoid the extra work. This would be similar to our previous example where we used the nginx base and added our files via Dockerfile.
+
+However, we have an opportunity to reduce our workload further and use an **on-build** image. **On-build** images are base images that are set to perform an action only when they are built as part of another Dockerfile. This means we could create a base with a common functionality and then fill in the gaps later when we produce a new image. Since we're not really interested in sorting out installing and running Node, just interested in he files that make up the application, we are going to make use of one of this images.
+
+We still need a Dockerfile to specify the base image that we want to build. Create a new folder and Dockerfile for the project:
+
+```bash
+> cd /vagrant
+> mkdir -p project2
+> touch project2/Dockerfile
+```
+
+The image we are going to use is the **Node onbuild official**. This pulls in a Node application located at XXX and executes the XXX file. Firstly, open the new Dockerfile in your editor and add:
+
+```
+FROM node:onbuild
+```
+
+We now need to layout our application. If we look in the node:onbuild ([Dockerfile](https://github.com/nodejs/docker-node/blob/04df8682a438b0ced8f530ab562f5197595e0cbb/4.2/onbuild/Dockerfile)) we can see
