@@ -43,8 +43,11 @@ Vagrant.configure(2) do |config|
      vb.memory = "1024"
   end
 
-	# nginx
+	# exercise 1
   config.vm.network "forwarded_port", guest: 9123, host: 9123
+
+	# exercise 2
+	config.vm.network "forwarded_port", guest: 7788, host: 7788
 
   # Registry
   config.vm.network "forwarded_port", guest: 5000, host: 5000

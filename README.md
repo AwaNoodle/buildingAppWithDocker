@@ -125,10 +125,18 @@ We still need a Dockerfile to specify the base image that we want to build. Crea
 > touch project2/Dockerfile
 ```
 
-The image we are going to use is the **Node onbuild official**. This pulls in a Node application located at XXX and executes the XXX file. Firstly, open the new Dockerfile in your editor and add:
+The image we are going to use is the **Node onbuild official** so we need to add this as the base. We also need to add the port our application listens on. Firstly, open the new Dockerfile in your editor and add:
 
 ```
 FROM node:onbuild
+EXPOSE 7788
 ```
 
-We now need to layout our application. If we look in the node:onbuild ([Dockerfile](https://github.com/nodejs/docker-node/blob/04df8682a438b0ced8f530ab562f5197595e0cbb/4.2/onbuild/Dockerfile)) we can see
+We now need to layout our application. If we look in the node:onbuild ([Dockerfile](https://github.com/nodejs/docker-node/blob/04df8682a438b0ced8f530ab562f5197595e0cbb/4.2/onbuild/Dockerfile)) we can see that it's expecting our application to have a **project.json** file next to the Dockerfile. This file, like a .csproj, lists information like version, name, dependencies, and scripts to execute. Thankfully, most of this is managed for us using Node Package Manager (NPM). On the VM:
+
+```bash
+> cd /vagrant/project2
+> npm init
+```
+
+You will be asked some details about your project. You can press enter for all of the questions to produce a default **project.json**. The important part is the **entry point** (default is index.js) as it lists the file that will be used to start the app.
