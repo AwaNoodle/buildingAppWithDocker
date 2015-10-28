@@ -139,4 +139,58 @@ We now need to layout our application. If we look in the node:onbuild ([Dockerfi
 > npm init
 ```
 
-You will be asked some details about your project. You can press enter for all of the questions to produce a default **project.json**. The important part is the **entry point** (default is index.js) as it lists the file that will be used to start the app.
+You will be asked some details about your project. You can press enter for all of the questions to produce a default **project.json**.
+
+To make it easier to develop our API, we can use Express.js to give us a mechanism to declare routes and handle calls into them. We will need to include some packages to do this and we do this via NPM. On the command line:
+
+```bash
+> npm install express --save
+```
+
+**<<<ADD AN APPLICATION HERE >>>**
+
+The base image is going to try starting our app using **npm** which requires that We modify **packages.json**. The important part is the **scripts** field as it will contain the script that will be used to start the app. Open the files and update it to:
+
+```json
+"scripts": {
+	"start": "node app.js"
+},
+```
+
+We can test everything is working by starting our application:
+
+```bash
+> cd /vagrant/project2
+> npm start
+```
+
+You can now navigate to (http://localhost:7788) and see the app running. Close the app with **ctrl-c**.
+
+Getting the application into a container is now simple:
+
+```bash
+> cd /vagrant/project2
+> docker build -t mynodeapp .
+```
+
+Once it's built you should be able to see the new image:
+
+```bash
+> docker images
+```
+
+Now we run it as any other container:
+
+```bash
+> docker run -d -rm -p 7788:7788 --name testingNode mynodeapp
+```
+
+Once again, you can now navigate to (http://localhost:7788) and see the app running. When you're finished, stop the container. It will clear itself up because we added the **-rm** switch to remove on exit:
+
+```bash
+> docker stop testingNode
+```
+
+### Exercise 3 - Registering our Container
+
+### Exercise 4 - Updates and Versioning
