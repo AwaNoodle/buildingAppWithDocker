@@ -20,14 +20,16 @@ $installLatestDocker = <<END
    fi
 END
 
-$pullDemoContainers = <<END
-
+$pullDemoItems = <<END
+    apt-get install node npm -y
+    docker pull Kitematic/hello-world-nginx
+    docker pull registry:2.1.1
+    docker pull node:onbuild
 END
 
 $runRegistry = <<END
     if [[ ! $(docker ps -a --filter='name=registry' -q) ]]
     then
-      docker pull registry:2.1.1
       sudo mkdir -p /opt/registry
       docker run -d -p 5000:5000 -v /opt/registry:/tmp/registry-dev --name registry registry:2.1.1
     else
@@ -54,6 +56,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", name: "Update Machine", inline: $update
   config.vm.provision "shell", name: "Install Docker", inline: $installLatestDocker
-  #config.vm.provision "shell", name: "Install Demo Containers", inline: $pullDemoContainers
+  config.vm.provision "shell", name: "Install Demo Items", inline: $pullDemoItems
   config.vm.provision "shell", name: "Run Registry", inline: $runRegistry
 end
