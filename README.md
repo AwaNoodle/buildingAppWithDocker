@@ -120,10 +120,12 @@ However, we have an opportunity to reduce our workload further and use an **on-b
 We still need a Dockerfile to specify the base image that we want to build. Create a new folder and Dockerfile for the project:
 
 ```bash
-> cd /vagrant
-> mkdir -p project2
+> cd ~
+> mkdir project2
 > touch project2/Dockerfile
 ```
+
+Note: we are using the **~** folder for this example because Node will try to alter the file permissions later on. This does not work so well on /vagrant as it's really a Windows folder.
 
 The image we are going to use is the **Node onbuild official** so we need to add this as the base. We also need to add the port our application listens on. Firstly, open the new Dockerfile in your editor and add:
 
@@ -135,7 +137,7 @@ EXPOSE 7788
 We now need to layout our application. If we look in the node:onbuild ([Dockerfile](https://github.com/nodejs/docker-node/blob/04df8682a438b0ced8f530ab562f5197595e0cbb/4.2/onbuild/Dockerfile)) we can see that it's expecting our application to have a **project.json** file next to the Dockerfile. This file, like a .csproj, lists information like version, name, dependencies, and scripts to execute. Thankfully, most of this is managed for us using Node Package Manager (NPM). On the VM:
 
 ```bash
-> cd /vagrant/project2
+> cd ~/project2
 > npm init
 ```
 
@@ -147,7 +149,9 @@ To make it easier to develop our API, we can use Express.js to give us a mechani
 > npm install express --save
 ```
 
-**<<<ADD AN APPLICATION HERE >>>**
+![Exercise 2 Demo A](/exercises/exercise2/demoA.gif)
+
+**ADD AN APPLICATION GUIDE HERE!**
 
 The base image is going to try starting our app using **npm** which requires that We modify **packages.json**. The important part is the **scripts** field as it will contain the script that will be used to start the app. Open the files and update it to:
 
@@ -160,7 +164,7 @@ The base image is going to try starting our app using **npm** which requires tha
 We can test everything is working by starting our application:
 
 ```bash
-> cd /vagrant/project2
+> cd ~/project2
 > npm start
 ```
 
@@ -169,7 +173,7 @@ You can now navigate to (http://localhost:7788) and see the app running. Close t
 Getting the application into a container is now simple:
 
 ```bash
-> cd /vagrant/project2
+> cd ~/project2
 > docker build -t mynodeapp .
 ```
 
