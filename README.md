@@ -141,7 +141,9 @@ We now need to layout our application. If we look in the node:onbuild ([Dockerfi
 > npm init
 ```
 
-You will be asked some details about your project. You can press enter for all of the questions to produce a default **project.json**.
+You will be asked some details about your project. You can press enter for all of the questions to produce a default **package.json**.
+
+**Note**: If you get stuck or want a reference, the example application files are in **exercises/exercise2/example**.
 
 To make it easier to develop our API, we can use Express.js to give us a mechanism to declare routes and handle calls into them. We will need to include some packages to do this and we do this via NPM. On the command line:
 
@@ -151,9 +153,71 @@ To make it easier to develop our API, we can use Express.js to give us a mechani
 
 ![Exercise 2 Demo A](/exercises/exercise2/demoA.gif)
 
-**ADD AN APPLICATION GUIDE HERE!**
+We're going to define a controller to handle calls into our API. Create a new folder called **controllers** and add a file in it called **whereIsController.js**. Edit the file to show:
 
-The base image is going to try starting our app using **npm** which requires that We modify **packages.json**. The important part is the **scripts** field as it will contain the script that will be used to start the app. Open the files and update it to:
+```js
+var whereIsController = function() {
+  var get = function(req, res) {
+    if(req.params.person.toUpperCase() == 'LUKE') {
+      res.status(404).send("No sign of Luke. Have you tried his desk?");
+    } else {
+      res.status(302).send();
+    }
+  };
+
+  return {
+    get: get
+  }
+}
+
+module.exports = whereIsController;
+```
+
+The controller is pretty simple. We are creating a function that will return an object containing a **get** function. The get is checking for a parameter, **person**, and providing a response based on the value. To get the value, we need to define a route.
+
+From the root of your project, create a new folder called **routes** and add a file called **whereIsRoutes.js**. Add the following to the file:
+
+```js
+var express = require('express');
+
+var routes = function() {
+  var whereIsController = require('../controllers/whereIsController.js')();
+  var whereIsRouter = express.Router();
+  whereIsRouter.route('/:person')
+    .get(whereIsController.get);
+
+  return whereIsRouter;
+};
+
+module.exports = routes;
+```
+
+The route is also creating a function which is returning the definition of a Express.js route. We've set the route for **/:person** which defines that we are expecting the last part of the URI to be the person name. **:person** will be available to the handler as the **person** parameter. We've told the route that we want the **get** to be handled by our controller. Notice that we've not defined a whole route, just a part of it. We'll let our main app decide where it wants to use us.
+
+Lastly, lets define the entry point for our application. Create a file called **app.js** and place it next to **package.json**. Edit the file so that it reads:
+
+```js
+var express = require('express');
+var app = express();
+
+var whereIsRoute = require('./routes/whereIsRoutes.js')();
+app.use('/api/whereis', whereIsRoute);
+
+app.get('/', function(req, res){
+  res.send('Welcome to my API');
+})
+
+var port = 7788;
+app.listen(port, function() {
+  console.log('Running API on port ' + port)
+});
+
+module.exports = app;
+```
+
+App.js sets up our base URI at **/api/whereis** and attaches the route handler we created to it. This will give us a handler for **/api/whereis/someNameHere**. We've also added a handler on **/** mostly as a quick sanity check that the app is up and running. We've also told Express.js to listen to port 7788. That's all there is to it.
+
+The base image is going to try starting our app using **npm** which requires that We modify **package.json**. The important part is the **scripts** field as it will contain the script that will be used to start the app. Open the files and update it to:
 
 ```json
 "scripts": {
@@ -165,10 +229,13 @@ We can test everything is working by starting our application:
 
 ```bash
 > cd ~/project2
+> npm install
 > npm start
 ```
 
-You can now navigate to (http://localhost:7788) and see the app running. Close the app with **ctrl-c**.
+You can now navigate to (http://localhost:7788) and see the app running with our base message. YOu can use a tool like Postman or cURL to navigate to our API and check thats working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
+
+Close the app with **ctrl-c** when you've finioshed testing.
 
 Getting the application into a container is now simple:
 
