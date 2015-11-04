@@ -279,4 +279,48 @@ We can see the Registry respond if we navigate to (http://localhost:5000) **ADD 
 
 To make use of our registry, we need to configure Docker to use it (as a default it will be pointing at the Docker Hub).
 
+We are going to use the container that we made during exercise 2 (so, if you deleted it you need to go back a step.) and add it into our registry. At present, the container is in our local images list (and can be seen via **docker images**) and should be called **mynodeapp**. **TO FINISH**
+
+To demonstrate the process of using the registry, we need to remove our local copy of the image:
+
+```bash
+> docker rmi mynodeapp
+```
+
+**Note:** If Docker complains that the image is in use, check the process list (**docker ps -a**) and then remove the offending container (**docker rm <name of container instance>**) before trying again.
+
+We can then pull the image from the Registry almost the same as we do with any other image:
+
+```bash
+> docker run -d -rm -p 7788:7788 --name testingRegistry http://localhost:5000/mynodeapp
+```
+
+Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. You can stop and remove your app as normal.
+
 ### Exercise 4 - Updates and Versioning
+
+If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to let us advertise the different versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is really a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
+
+```bash
+> docker pull Kitematic/hello-world-nginx
+> docker tag Kitematic/hello-world-nginx newnginx
+> docker tag Kitematic/hello-world-nginx othernginx
+> docker images
+```
+
+Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and three parts (depending on usage); the owner (optional), the registry name, and the tag string (optional):
+
+![Exercise 2 Demo A](/exercises/exercise4/dockerTags.png)
+
+- **Owner** is commonly used as the author account in the Docker Hub (similar to how Github works)
+- **Name** is the container name
+- **Tage** is the version information. If this isn't specified then it will be 'latest'
+
+So **mark/nginx:0.0.2** would represent a container that is authored by the account **mark**, is for the **nginx** container, and is for version **0.0.2**.
+
+Docker operates a somewhat open approach to versioning. Legitimate version tags could be:
+
+- 0.0.1
+- v0.0.1
+- JumpingJaguar
+- jhlkjhjgi7t673w
