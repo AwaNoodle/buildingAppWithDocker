@@ -8,6 +8,7 @@ A set of exercises to build a simple Docker application
 	- Vagrant requires an SSH client. Try [cmder (Windows)](http://cmder.net/) or installing [msysgit (Windows)](https://git-for-windows.github.io/) if you don't have on installed
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 - Some knowledge on using Vim or a text editor which will let you alter line endings, such as Sublime
+- A tool like Postman will be really handy
 
 ## The Demo Environment
 
@@ -263,5 +264,19 @@ Once again, you can now navigate to (http://localhost:7788) and see the app runn
 ```
 
 ### Exercise 3 - Registering our Container
+
+TO make use of our container we need to have a way of moving it off our box. We could ask users to clone the application repository and build the container on their machine but that risks introducing change and adds a few irritating steps for the user. Our alternative is to use a Docker Registry to store the image and let use retrieve it when we need it. We've already been using a registry in the form of the Docker Hub, Docker's online Registry that stores all of the containers we've been pulling down.
+
+There is a good chance we don't want to use a cloud Registry if we're working on private projects We could pay for private storage of course, and there is a lot of benefit to this. It may not fall under your security policy, however. For this, we can use Docker's Registry container and run a version locally. This has already been installed on the VM and should be listening on port 5000. LEts have a look:
+
+```bash
+> docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS			PORTS                    NAMES
+b77b86b52c35        registry:2.1.1      "/bin/registry /etc/d"   6 days ago          Up 6 days	0.0.0.0:5000->5000/tcp   registry
+```
+
+We can see the Registry respond if we navigate to (http://localhost:5000) **ADD FULL PATH** on our host machine (we're exposing the port via Vagrant).
+
+To make use of our registry, we need to configure Docker to use it (as a default it will be pointing at the Docker Hub).
 
 ### Exercise 4 - Updates and Versioning
