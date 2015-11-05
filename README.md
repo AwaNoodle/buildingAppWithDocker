@@ -279,7 +279,7 @@ We can see the Registry respond if we navigate to (http://localhost:5000) **ADD 
 
 To make use of our registry, we need to configure Docker to use it (as a default it will be pointing at the Docker Hub).
 
-We are going to use the container that we made during exercise 2 (so, if you deleted it you need to go back a step.) and add it into our registry. At present, the container is in our local images list (and can be seen via **docker images**) and should be called **mynodeapp**. **TO FINISH**
+We are going to use the container that we made during exercise 2 (so, if you deleted it you need to go back a step.) and add it into our registry. At present, the container is in our local images list (and can be seen via **docker images**) and should be called **mynodeapp**. **<< TO FINISH >>**
 
 To demonstrate the process of using the registry, we need to remove our local copy of the image:
 
@@ -302,15 +302,22 @@ Navigating to (http://localhost:7788) will again show you your app. If you look 
 If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to let us advertise the different versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is really a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
 
 ```bash
-> docker pull Kitematic/hello-world-nginx
 > docker tag Kitematic/hello-world-nginx newnginx
 > docker tag Kitematic/hello-world-nginx othernginx
 > docker images
+REPOSITORY                    TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+kitematic/hello-world-nginx   latest              fa9a3bb406d3        4 months ago        7.909 MB
+newnginx                      latest              fa9a3bb406d3        4 months ago        7.909 MB
+othernginx                    latest              fa9a3bb406d3        4 months ago        7.909 MB
 ```
+
+You will see the new entries in the images list. What you can also see is that the UUID for the image is the same for all of the entries.
+
+![Exercise 4 demo A](/exercises/exercise4/demoA.gif)
 
 Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and three parts (depending on usage); the owner (optional), the registry name, and the tag string (optional):
 
-![Exercise 2 Demo A](/exercises/exercise4/dockerTags.png)
+![Exercise 4 tag diagram](/exercises/exercise4/dockerTags.png)
 
 - **Owner** is commonly used as the author account in the Docker Hub (similar to how Github works)
 - **Name** is the container name
