@@ -287,7 +287,7 @@ Things aren't quite as simple as they seem however. The way we tag the image act
 
 - **Registry** is the location of the registry to store the image. Commonly used as the author account in the Docker Hub (similar to how Github works), it can also be the location of another registry (i.e. localhost:5000)
 - **Name** is the container name
-- **Tage** is the version information. If this isn't specified then it will be 'latest'
+- **Tag** is the version information. If this isn't specified then it will be 'latest'
 
 So:
 - **mark/nginx:0.0.2** would represent a container on Docker Hub that is authored by the account **mark**, is for the **nginx** container, and is for version **0.0.2**
@@ -305,7 +305,7 @@ Docker operates a somewhat open approach to versioning. Legitimate version tags 
 
 TO make use of our container we need to have a way of moving it off our box. We could ask users to clone the application repository and build the container on their machine but that risks introducing change and adds a few irritating steps for the user. Our alternative is to use a Docker Registry to store the image and let use retrieve it when we need it. We've already been using a registry in the form of the Docker Hub, Docker's online Registry that stores all of the containers we've been pulling down.
 
-There is a good chance we don't want to use a cloud Registry if we're working on private projects We could pay for private storage of course, and there is a lot of benefit to this. It may not fall under your security policy, however. For this, we can use Docker's Registry container and run a version locally. This has already been installed on the VM and should be listening on port 5000. Lets have a look:
+There is a good chance we don't want to use a public Registry if we're working on private projects We could pay for private storage of course, and there is a lot of benefit to this. It may not fall under your security policy, however. For this, we can use Docker's Registry container and run a version locally. This has already been installed on the VM and should be listening on port 5000. Lets have a look:
 
 ```bash
 > docker ps -a
@@ -313,9 +313,19 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 b77b86b52c35        registry:2.1.1      "/bin/registry /etc/d"   6 days ago          Up 6 days	0.0.0.0:5000->5000/tcp   registry
 ```
 
-We can see the Registry respond if we navigate to (http://localhost:5000) **ADD FULL PATH** on our host machine (we're exposing the port via Vagrant).
+We can see the Registry respond if we navigate to (http://localhost:5000) on our host machine (we're exposing the port via Vagrant). As we covered in **exercise 3**, this gives us a registry name of **localhost:5000**.
 
-We are going to use the container that we made during exercise 2 (so, if you deleted it, you need to go back a step.) and add it into our registry. At present, the container is in our local images list (and can be seen via **docker images**) and should be called **mynodeapp**. **<< TO FINISH >>**
+We are going to use the container that we made during exercise 2 (so, if you deleted it, you need to go back a step.) and add it into our registry. At present, the container is in our local images list (and can be seen via **docker images**) and should be called **mynodeapp**. The first thing we will do is tag it so it's associated with our local registry:
+
+```bash
+> docker tag mynodeapp localhost:5000/mynodeapp
+```
+
+We only then need to tell Docker to push the image. Since we have already inidcated where the image is going and we don't need to log in to a service, pushing is as simple as:
+
+```bash
+> docker push localhost:5000/mynodeapp
+```
 
 To demonstrate the process of using the registry, we need to remove our local copy of the image:
 
@@ -334,3 +344,5 @@ We can then pull the image from the Registry almost the same as we do with any o
 Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. You can stop and remove your app as normal.
 
 ### Exercise 5 - Container Updates
+
+Let's put all of this together an create a new version of our application.
