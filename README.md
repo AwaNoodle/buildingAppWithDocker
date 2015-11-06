@@ -263,41 +263,7 @@ Once again, you can now navigate to (http://localhost:7788) and see the app runn
 > docker stop testingNode
 ```
 
-### Exercise 3 - Registering our Container
-
-TO make use of our container we need to have a way of moving it off our box. We could ask users to clone the application repository and build the container on their machine but that risks introducing change and adds a few irritating steps for the user. Our alternative is to use a Docker Registry to store the image and let use retrieve it when we need it. We've already been using a registry in the form of the Docker Hub, Docker's online Registry that stores all of the containers we've been pulling down.
-
-There is a good chance we don't want to use a cloud Registry if we're working on private projects We could pay for private storage of course, and there is a lot of benefit to this. It may not fall under your security policy, however. For this, we can use Docker's Registry container and run a version locally. This has already been installed on the VM and should be listening on port 5000. LEts have a look:
-
-```bash
-> docker ps -a
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS			PORTS                    NAMES
-b77b86b52c35        registry:2.1.1      "/bin/registry /etc/d"   6 days ago          Up 6 days	0.0.0.0:5000->5000/tcp   registry
-```
-
-We can see the Registry respond if we navigate to (http://localhost:5000) **ADD FULL PATH** on our host machine (we're exposing the port via Vagrant).
-
-To make use of our registry, we need to configure Docker to use it (as a default it will be pointing at the Docker Hub).
-
-We are going to use the container that we made during exercise 2 (so, if you deleted it you need to go back a step.) and add it into our registry. At present, the container is in our local images list (and can be seen via **docker images**) and should be called **mynodeapp**. **<< TO FINISH >>**
-
-To demonstrate the process of using the registry, we need to remove our local copy of the image:
-
-```bash
-> docker rmi mynodeapp
-```
-
-**Note:** If Docker complains that the image is in use, check the process list (**docker ps -a**) and then remove the offending container (**docker rm <name of container instance>**) before trying again.
-
-We can then pull the image from the Registry almost the same as we do with any other image:
-
-```bash
-> docker run -d -rm -p 7788:7788 --name testingRegistry http://localhost:5000/mynodeapp
-```
-
-Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. You can stop and remove your app as normal.
-
-### Exercise 4 - Updates and Versioning
+### Exercise 3 - Container NAming and Versioning
 
 If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to let us advertise the different versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is really a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
 
@@ -313,17 +279,19 @@ othernginx                    latest              fa9a3bb406d3        4 months a
 
 You will see the new entries in the images list. What you can also see is that the UUID for the image is the same for all of the entries.
 
-![Exercise 4 demo A](/exercises/exercise4/demoA.gif)
+![Exercise 3 demo A](/exercises/exercise3/demoA.gif)
 
-Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and three parts (depending on usage); the owner (optional), the registry name, and the tag string (optional):
+Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and three parts (depending on usage); the registry (optional), the registry name, and the tag string (optional):
 
-![Exercise 4 tag diagram](/exercises/exercise4/dockerTags.png)
+![Exercise 3 tag diagram](/exercises/exercise3/dockerTags.png)
 
-- **Owner** is commonly used as the author account in the Docker Hub (similar to how Github works)
+- **Registry** is the location of the registry to store the image. Commonly used as the author account in the Docker Hub (similar to how Github works), it can also be the location of another registry (i.e. localhost:5000)
 - **Name** is the container name
 - **Tage** is the version information. If this isn't specified then it will be 'latest'
 
-So **mark/nginx:0.0.2** would represent a container that is authored by the account **mark**, is for the **nginx** container, and is for version **0.0.2**.
+So:
+- **mark/nginx:0.0.2** would represent a container on Docker Hub that is authored by the account **mark**, is for the **nginx** container, and is for version **0.0.2**
+- **localhost:5000/nginx** would represent a container in a registry at **localhost:5000**, called **nginx**, and is for version **latest**
 
 Docker operates a somewhat open approach to versioning. Legitimate version tags could be:
 
@@ -331,3 +299,38 @@ Docker operates a somewhat open approach to versioning. Legitimate version tags 
 - v0.0.1
 - JumpingJaguar
 - jhlkjhjgi7t673w
+
+
+### Exercise 4 - Registering our Container
+
+TO make use of our container we need to have a way of moving it off our box. We could ask users to clone the application repository and build the container on their machine but that risks introducing change and adds a few irritating steps for the user. Our alternative is to use a Docker Registry to store the image and let use retrieve it when we need it. We've already been using a registry in the form of the Docker Hub, Docker's online Registry that stores all of the containers we've been pulling down.
+
+There is a good chance we don't want to use a cloud Registry if we're working on private projects We could pay for private storage of course, and there is a lot of benefit to this. It may not fall under your security policy, however. For this, we can use Docker's Registry container and run a version locally. This has already been installed on the VM and should be listening on port 5000. Lets have a look:
+
+```bash
+> docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS			PORTS                    NAMES
+b77b86b52c35        registry:2.1.1      "/bin/registry /etc/d"   6 days ago          Up 6 days	0.0.0.0:5000->5000/tcp   registry
+```
+
+We can see the Registry respond if we navigate to (http://localhost:5000) **ADD FULL PATH** on our host machine (we're exposing the port via Vagrant).
+
+We are going to use the container that we made during exercise 2 (so, if you deleted it, you need to go back a step.) and add it into our registry. At present, the container is in our local images list (and can be seen via **docker images**) and should be called **mynodeapp**. **<< TO FINISH >>**
+
+To demonstrate the process of using the registry, we need to remove our local copy of the image:
+
+```bash
+> docker rmi mynodeapp
+```
+
+**Note:** If Docker complains that the image is in use, check the process list (**docker ps -a**) and then remove the offending container (**docker rm <name of container instance>**) before trying again.
+
+We can then pull the image from the Registry almost the same as we do with any other image:
+
+```bash
+> docker run -d -rm -p 7788:7788 --name testingRegistry localhost:5000/mynodeapp
+```
+
+Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. You can stop and remove your app as normal.
+
+### Exercise 5 - Container Updates
