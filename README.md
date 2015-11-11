@@ -320,11 +320,17 @@ We are going to use the container that we made during exercise 2 (so, if you del
 ```bash
 > docker tag mynodeapp localhost:5000/mynodeapp
 ```
+This will create the **latet** tag for the image. We should also add a version number:
 
-We only then need to tell Docker to push the image. Since we have already inidcated where the image is going and we don't need to log in to a service, pushing is as simple as:
+```bash
+> docker tag mynodeapp localhost:5000/mynodeapp:0.0.1
+```
+
+We only then need to tell Docker to push the images. We need to push both tags but as they point to the same image we are only uploading the image once. We have already indicated where the image is going (by prepending **localhost:5000**) and we don't need to log in to a service, pushing is as simple as:
 
 ```bash
 > docker push localhost:5000/mynodeapp
+> docker push localhost:5000/mynodeapp:0.0.1
 ```
 
 To demonstrate the process of using the registry, we need to remove our local copy of the image:
@@ -341,7 +347,7 @@ We can then pull the image from the Registry almost the same as we do with any o
 > docker run -d -rm -p 7788:7788 --name testingRegistry localhost:5000/mynodeapp
 ```
 
-Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. You can stop and remove your app as normal.
+Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. If we were to run **localhost:5000/mynodeapp:0.0.1** we would end up with the same result. You can stop and remove your app as normal.
 
 ### Exercise 5 - Container Updates
 
