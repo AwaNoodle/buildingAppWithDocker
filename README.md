@@ -352,3 +352,11 @@ Navigating to (http://localhost:7788) will again show you your app. If you look 
 ### Exercise 5 - Container Updates
 
 Let's put all of this together an create a new version of our application.
+
+We forgot to add a friendly message to the 302 response in our app. Open up your **whereIsController** and add a message to the 302 response:
+
+```js
+res.status(302).send("Found " + req.params.person);
+```
+
+Once complete, follow the same build process as in exercise 2. 
