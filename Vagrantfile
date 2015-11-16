@@ -51,8 +51,12 @@ Vagrant.configure(2) do |config|
 	# exercise 2
 	config.vm.network "forwarded_port", guest: 7788, host: 7788
 
-  # Registry
+  # Exercise 4
   config.vm.network "forwarded_port", guest: 5000, host: 5000
+
+	# Exercise 5
+	config.vm.network "forwarded_port", guest: 7788, host: 7789
+	config.vm.network "forwarded_port", guest: 7788, host: 7790
 
   config.vm.provision "shell", name: "Update Machine", inline: $update
   config.vm.provision "shell", name: "Install Docker", inline: $installLatestDocker

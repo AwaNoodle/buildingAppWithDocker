@@ -303,7 +303,7 @@ Docker operates a somewhat open approach to versioning. Legitimate version tags 
 - JumpingJaguar
 - jhlkjhjgi7t673w
 
-This means you have quite a lot of freedom to use which ever scheme you prefer to version your images. Generally it's easier to follow [SemVer](http://www.semver.org) but since you can have more than one tag per image, you can be creative. For example, the **node** container we have been using is tagged **onbuild** which refers to the latest on-build version of the image. It could be version 2.0, 2.1, or 55.1 under the hood but you have an easy reference point to go and get the latest version of the **onbuild** versions. This is similar to the **latest** tag where it essentially 'floats' to the latest uploaded version that either specifies latest or doesn't specify a tag. You do need to put some thought into how you are going to use these tags as not considering what happens with **latest** etc may have bad consequences for your consumers when they get unexpected versions. 
+This means you have quite a lot of freedom to use which ever scheme you prefer to version your images. Generally it's easier to follow [SemVer](http://www.semver.org) but since you can have more than one tag per image, you can be creative. For example, the **node** container we have been using is tagged **onbuild** which refers to the latest on-build version of the image. It could be version 2.0, 2.1, or 55.1 under the hood but you have an easy reference point to go and get the latest version of the **onbuild** versions. This is similar to the **latest** tag where it essentially 'floats' to the latest uploaded version that either specifies latest or doesn't specify a tag. You do need to put some thought into how you are going to use these tags as not considering what happens with **latest** etc may have bad consequences for your consumers when they get unexpected versions. If you're consuming a container and you don't want to risk changes between pulls, it's best to fix the version of an image that you want.
 
 
 ### Exercise 4 - Registering our Container
@@ -338,10 +338,12 @@ We only then need to tell Docker to push the images. We need to push both tags b
 > docker push localhost:5000/mynodeapp:0.0.1
 ```
 
-To demonstrate the process of using the registry, we need to remove our local copy of the image:
+To demonstrate the process of using the registry, we need to remove our local copies of the image:
 
 ```bash
 > docker rmi mynodeapp
+> docker rmi localhost:5000/mynodeapp
+> docker rmi localhost:5000/mynodeapp:0.0.1
 ```
 
 **Note:** If Docker complains that the image is in use, check the process list (**docker ps -a**) and then remove the offending container (**docker rm <name of container instance>**) before trying again.
@@ -364,4 +366,33 @@ We forgot to add a friendly message to the 302 response in our app. Open up your
 res.status(302).send("Found " + req.params.person);
 ```
 
-Once complete, follow the same build process as in exercise 2.
+Once complete, follow the same build process as in exercise 2. This will result in a new **mynodeapp** image. We now need to tag this image with the new version number, to tag the image as the latest, and then to upload them to our registry:
+
+```bash
+> docker build -t mynodeapp .
+> docker tag mynodeapp localhost:5000/mynodeapp
+> docker push localhost:5000/mynodeapp
+> docker tag mynodeapp localhost:5000/mynodeapp:0.0.2
+> docker push localhost:5000/mynodeapp:0.0.2
+```
+
+Let's clean up our images:
+
+```bash
+> docker rmi mynodeapp
+> docker rmi localhost:5000/mynodeapp
+> docker rmi localhost:5000/mynodeapp:0.0.2
+```
+
+...and test out the old and new versions:
+
+```bash
+> docker run -d -rm -p 7788:7788 --name testingRegistry_latest localhost:5000/mynodeapp
+> docker run -d -rm -p 7789:7788 --name testingRegistry_old localhost:5000/mynodeapp:0.0.1
+> docker run -d -rm -p 7790:7788 --name testingRegistry_new localhost:5000/mynodeapp:0.0.2
+```
+
+You can make a call to each of the containers to see if it's worked:
+- [Current Latest](http://localhost:7788/api/whereis/tim)
+- [Old](http://localhost:7789/api/whereis/tim)
+- [New](http://localhost:7790/api/whereis/tim)
