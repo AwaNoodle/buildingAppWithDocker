@@ -236,7 +236,7 @@ We can test everything is working by starting our application:
 
 You can now navigate to (http://localhost:7788) and see the app running with our base message. YOu can use a tool like Postman or cURL to navigate to our API and check thats working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
 
-Close the app with **ctrl-c** when you've finioshed testing.
+Close the app with **ctrl-c** when you've finished testing.
 
 Getting the application into a container is now simple:
 
@@ -263,9 +263,9 @@ Once again, you can now navigate to (http://localhost:7788) and see the app runn
 > docker stop testingNode
 ```
 
-### Exercise 3 - Container NAming and Versioning
+### Exercise 3 - Container Naming and Versioning
 
-If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to let us advertise the different versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is really a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
+If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to let us advertise the container name and versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is really a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
 
 ```bash
 > docker tag Kitematic/hello-world-nginx newnginx
@@ -281,11 +281,14 @@ You will see the new entries in the images list. What you can also see is that t
 
 ![Exercise 3 demo A](/exercises/exercise3/demoA.gif)
 
-Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and three parts (depending on usage); the registry (optional), the registry name, and the tag string (optional):
+Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and four parts (depending on usage); the registry location (optional), the user account (optional), the registry name, and the version tag (optional):
 
-![Exercise 3 tag diagram](/exercises/exercise3/dockerTags.png)
+```
+[<registry location>/][<author name>/]<image name>:<version tag>
+```
 
-- **Registry** is the location of the registry to store the image. Commonly used as the author account in the Docker Hub (similar to how Github works), it can also be the location of another registry (i.e. localhost:5000)
+- **Registry** is the location of the registry to store the image. The field is optional and by default it will be omitted and the registry will be set to Docker Hub (unless you have set an alternative default via Docker). It can also be the location of another registry (i.e. localhost:5000).
+- **Username** is the name of the account in the registry to store the image under. Commonly this will be the same as an account you are using on the registry you are using. The field is optional.
 - **Name** is the container name
 - **Tag** is the version information. If this isn't specified then it will be 'latest'
 
@@ -299,6 +302,8 @@ Docker operates a somewhat open approach to versioning. Legitimate version tags 
 - v0.0.1
 - JumpingJaguar
 - jhlkjhjgi7t673w
+
+This means you have quite a lot of freedom to use which ever scheme you prefer to version your images. Generally it's easier to follow [SemVer](http://www.semver.org) but since you can have more than one tag per image, you can be creative. For example, the **node** container we have been using is tagged **onbuild** which refers to the latest on-build version of the image. It could be version 2.0, 2.1, or 55.1 under the hood but you have an easy reference point to go and get the latest version of the **onbuild** versions. This is similar to the **latest** tag where it essentially 'floats' to the latest uploaded version that either specifies latest or doesn't specify a tag. You do need to put some thought into how you are going to use these tags as not considering what happens with **latest** etc may have bad consequences for your consumers when they get unexpected versions. 
 
 
 ### Exercise 4 - Registering our Container
@@ -359,4 +364,4 @@ We forgot to add a friendly message to the 302 response in our app. Open up your
 res.status(302).send("Found " + req.params.person);
 ```
 
-Once complete, follow the same build process as in exercise 2. 
+Once complete, follow the same build process as in exercise 2.
