@@ -6,6 +6,11 @@ $update = <<END
 	sudo apt-get upgrade -y
 END
 
+$installNode = <<END
+  curl -sL https://deb.nodesource.com/setup | sudo bash -
+  sudo apt-get install nodejs build-essential -y
+END
+
 # Update to the latest Docker
 $installLatestDocker = <<END
 	 if hash docker 2>/dev/null; then
@@ -21,7 +26,6 @@ $installLatestDocker = <<END
 END
 
 $pullDemoItems = <<END
-    apt-get install node npm -y
     docker pull Kitematic/hello-world-nginx
     docker pull registry:2.1.1
     docker pull node:onbuild
@@ -59,6 +63,7 @@ Vagrant.configure(2) do |config|
 	config.vm.network "forwarded_port", guest: 7788, host: 7790
 
   config.vm.provision "shell", name: "Update Machine", inline: $update
+  config.vm.provision "shell", name: "Add NodeJS", inline: $installNode
   config.vm.provision "shell", name: "Install Docker", inline: $installLatestDocker
   config.vm.provision "shell", name: "Install Demo Items", inline: $pullDemoItems
   config.vm.provision "shell", name: "Run Registry", inline: $runRegistry
