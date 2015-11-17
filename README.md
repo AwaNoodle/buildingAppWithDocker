@@ -5,14 +5,14 @@ A set of exercises to build a simple Docker application
 ## What You'll Need
 
 - [Vagrant](https://www.vagrantup.com/downloads.html)
-	- Vagrant requires an SSH client. Try [cmder (Windows)](http://cmder.net/) or installing [msysgit (Windows)](https://git-for-windows.github.io/) if you don't have on installed
+	- Vagrant requires an SSH client. Try [cmder (Windows)](http://cmder.net/) or installing [msysgit (Windows)](https://git-for-windows.github.io/) if you don't have one installed
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-- Some knowledge on using Vim or a text editor which will let you alter line endings, such as Sublime
-- A tool like Postman will be really handy
+- Some knowledge on using Vi or a text editor which will let you alter line endings, such as [Sublime](https://www.sublimetext.com/)
+- A tool like [Postman](https://www.getpostman.com/) will be really handy
 
 ## The Demo Environment
 
-Make sure you've installed Vagrant and VirtualBox and then, from the a command line at the project folder, run:
+The demo environment installs Docker, the Docker Registry, some base Docker images we will be using, and NodeJS. To use the environment, make sure you've installed Vagrant and VirtualBox and then, from a command line at the project folder, run:
 
 ```bash
 > vagrant up
@@ -24,7 +24,7 @@ Test that the machine is running and that you can access it via:
 > vagrant ssh -c "docker --version"
 ```
 
-The demo environment installs Docker and the Docker Registry.
+You should see the current Docker version displayed.
 
 ## Exercises
 
@@ -34,11 +34,13 @@ For all exercises, you will need to remote into the virtual machine created by V
 > vagrant ssh
 ```
 
+You can exit back out by typing **exit** at the console. 
+
 ### Exercise 1 - Adding Static Data using an Existing Image
 
-A simple usage we might have for Docker is to provide some static content all bundled up which a mechanism for displaying it.
+A simple usage we might have for Docker is to provide some static content all bundled up with a mechanism for displaying it.
 
-For this exercise, we are going to use the **Kitematic/hello-world-nginx** container to serve up some static content that we supply. What we will do is pull in the **hello-world-nginx** image as a base and then override the files that it was originally serving and supply our own. It's useful to know what the base image is doing so the Dockerfile that produced the **Kitematic/hello-world-nginx** image is supplied in (exercises/exercise1/reference/dockerfile). In this file, we can see that the image exposes a mount point at **/website_files** and can make an assumption that this is the location nginx is service files from:
+For this exercise, we are going to use the **Kitematic/hello-world-nginx** container to serve up some static content that we supply. What we will do is pull in the **hello-world-nginx** image as a base, override the files that it was originally serving, and supply our own. It's useful to know what the base image is doing so the Dockerfile that produced the **Kitematic/hello-world-nginx** image is supplied in (exercises/exercise1/reference/dockerfile). In this file, we can see that the image exposes a mount point at **/website_files** and can make an assumption that this is the location nginx is serving files from:
 
 ```
 VOLUME ["/website_files"]
@@ -60,7 +62,7 @@ You will be able to see the project folder on your host or your VM. Open **index
 </body>
 ```
 
-Now we need a Dockerfile to tell Docker what base we are going to use and that we want to add in our files. Create a new file called **Dockerfile** (no extension) and place it in the root of the project. Add the following content:
+Now we need a Dockerfile to tell Docker which base we are going to use and that we want to add in our files. Create a new file called **Dockerfile** (no extension) and place it in the root of the project. Add the following content:
 
 ```
 FROM kitematic/hello-world-nginx
@@ -68,7 +70,7 @@ FROM kitematic/hello-world-nginx
 ADD ./content/index.html /website_files/index.html
 ```
 
-And that's all we need. So what is Docker going to do here?
+That's all we need. So what is Docker going to do here?
 
 The **FROM** keyword instructs Docker to locate the image specified, and use it as a base. Anything we do further will be added on top of this image. We dont need to pull the image down ourselves; Docker will handle that when we build the image.
 
@@ -90,20 +92,19 @@ We've told Docker to:
 
 ![Exercise 1 Demo A](/exercises/exercise1/demoA.gif)
 
-Once the build has completed, we can look in the images list, and see our new image (and it's base image):
+Once the build has completed, we can look in the images list and see our new image (and it's base image):
 
 ```bash
 > docker images
 REPOSITORY                    TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
-mynginx				                latest              1da448d0e9de        1 hour ago         	8.4 MB
+mynginx                       latest              1da448d0e9de        1 hour ago          8.4 MB
 kitematic/hello-world-nginx   latest              fa9a3bb406d3        4 months ago        7.913 MB
 ```
 
-We can now start up our container:
+Let's start up our container:
 
 ```bash
 > docker run -d -p 9123:80 --name testingChanges mynginx
-mynginx
 ```
 
 From the host machine, navigate to (http://localhost:9123) and you should see your new site.
@@ -114,9 +115,13 @@ From the host machine, navigate to (http://localhost:9123) and you should see yo
 
 For this exercise we are going to create a new application and host it in a container. We will use Node.JS and Express.JS to create a simple API.
 
-Normally, we would need to have provisioned a machine with Node to be able to run the application. We could do a similar process with Docker by taking a Linux base, like Busybox, an adding Node and then our application. More likely, we will choose one of the pre-built Node images and avoid the extra work. This would be similar to our previous example where we used the nginx base and added our files via Dockerfile.
+Normally, we would need to have provisioned a machine with Node to be able to run the application. We could do a similar process with Docker by taking a Linux base, like Busybox, an adding Node and then our application. Easier still, we will choose one of the pre-built Node images and avoid the extra work. This would be similar to our previous example where we used the nginx base and added our files via Dockerfile.
 
-However, we have an opportunity to reduce our workload further and use an **on-build** image. **On-build** images are base images that are set to perform an action only when they are built as part of another Dockerfile. This means we could create a base with a common functionality and then fill in the gaps later when we produce a new image. Since we're not really interested in sorting out installing and running Node, just interested in he files that make up the application, we are going to make use of one of this images.
+However, we have an opportunity to reduce our workload further and use an **on-build** image. **On-build** images are base images that are set to perform an action only when they are built as part of another Dockerfile. This means we could create a base with a common functionality and then fill in the gaps later when we produce a new image. Since we're not really interested in sorting out installing and running Node, just interested in he files that make up the application, we are going to make use of one of these images.
+
+**Note**: If you get stuck or want a reference, the example application files are in **exercises/exercise2/example**.
+
+### Setting Up
 
 We still need a Dockerfile to specify the base image that we want to build. Create a new folder and Dockerfile for the project:
 
@@ -126,7 +131,7 @@ We still need a Dockerfile to specify the base image that we want to build. Crea
 > touch project2/Dockerfile
 ```
 
-Note: we are using the **~** folder for this example because Node will try to alter the file permissions later on. This does not work so well on /vagrant as it's really a Windows folder.
+Note: we are using the **~** folder for this example because Node will try to alter the file permissions later on. This does not work so well on /vagrant if you're on Windows.
 
 The image we are going to use is the **Node onbuild official** so we need to add this as the base. We also need to add the port our application listens on. Firstly, open the new Dockerfile in your editor and add:
 
@@ -135,7 +140,7 @@ FROM node:onbuild
 EXPOSE 7788
 ```
 
-We now need to layout our application. If we look in the node:onbuild ([Dockerfile](https://github.com/nodejs/docker-node/blob/04df8682a438b0ced8f530ab562f5197595e0cbb/4.2/onbuild/Dockerfile)) we can see that it's expecting our application to have a **project.json** file next to the Dockerfile. This file, like a .csproj, lists information like version, name, dependencies, and scripts to execute. Thankfully, most of this is managed for us using Node Package Manager (NPM). On the VM:
+We now need to create our application. If we look in the node:onbuild ([Dockerfile](https://github.com/nodejs/docker-node/blob/04df8682a438b0ced8f530ab562f5197595e0cbb/4.2/onbuild/Dockerfile)) we can see that it's expecting our application to have a **project.json** file next to the Dockerfile. This file, like a .csproj, lists information like version, name, dependencies, and scripts to execute. Thankfully, most of this is managed for us using Node Package Manager (NPM):
 
 ```bash
 > cd ~/project2
@@ -144,17 +149,25 @@ We now need to layout our application. If we look in the node:onbuild ([Dockerfi
 
 You will be asked some details about your project. You can press enter for all of the questions to produce a default **package.json**.
 
-**Note**: If you get stuck or want a reference, the example application files are in **exercises/exercise2/example**.
-
-To make it easier to develop our API, we can use Express.js to give us a mechanism to declare routes and handle calls into them. We will need to include some packages to do this and we do this via NPM. On the command line:
+To make it easier to develop our API, we can use Express.js to give us a mechanism to declare routes and handle calls into them. We will need to include some packages to do this which we do via NPM. On the command line:
 
 ```bash
 > npm install express --save
 ```
 
+The command is telling NPM to bring down the Express.JS package, it's dependencies (if any), and save them locally to the project. You can look in the **node_modules** folder  thats just appeared in your project to see what's been installed. This is really useful to keep all of our modules next to our app rather than install somewhere on our machine. 
+
 ![Exercise 2 Demo A](/exercises/exercise2/demoA.gif)
 
+## Creating the App
+
 We're going to define a controller to handle calls into our API. Create a new folder called **controllers** and add a file in it called **whereIsController.js**. Edit the file to show:
+
+```bash
+> cd ~/project2
+> mkdir controllers
+> touch controllers/whereIsController.js
+```
 
 ```js
 var whereIsController = function() {
@@ -174,9 +187,15 @@ var whereIsController = function() {
 module.exports = whereIsController;
 ```
 
-The controller is pretty simple. We are creating a function that will return an object containing a **get** function. The get is checking for a parameter, **person**, and providing a response based on the value. To get the value, we need to define a route.
+The controller is pretty simple. We are creating a function that will return an object containing a **get** function. The **get** is checking for a parameter, **person**, and providing a response based on the value. To get the value, we need to define a route.
 
 From the root of your project, create a new folder called **routes** and add a file called **whereIsRoutes.js**. Add the following to the file:
+
+```bash
+> cd ~/project2
+> mkdir routes
+> touch routes/whereIsRoutes.js
+```
 
 ```js
 var express = require('express');
@@ -196,6 +215,11 @@ module.exports = routes;
 The route is also creating a function which is returning the definition of a Express.js route. We've set the route for **/:person** which defines that we are expecting the last part of the URI to be the person name. **:person** will be available to the handler as the **person** parameter. We've told the route that we want the **get** to be handled by our controller. Notice that we've not defined a whole route, just a part of it. We'll let our main app decide where it wants to use us.
 
 Lastly, lets define the entry point for our application. Create a file called **app.js** and place it next to **package.json**. Edit the file so that it reads:
+
+```bash
+> cd ~/project2
+> touch app.js
+```
 
 ```js
 var express = require('express');
@@ -218,7 +242,7 @@ module.exports = app;
 
 App.js sets up our base URI at **/api/whereis** and attaches the route handler we created to it. This will give us a handler for **/api/whereis/someNameHere**. We've also added a handler on **/** mostly as a quick sanity check that the app is up and running. We've also told Express.js to listen to port 7788. That's all there is to it.
 
-The base image is going to try starting our app using **npm** which requires that We modify **package.json**. The important part is the **scripts** field as it will contain the script that will be used to start the app. Open the files and update it to:
+The base Docker image is going to try starting our app using the **npm** command. NPM lets you define scripts to perform actions such as testing and running. We need to update our **package.json** to define what action we want when the **start** script is run. Open the **package.json** file and update it to:
 
 ```json
 "scripts": {
@@ -226,7 +250,7 @@ The base image is going to try starting our app using **npm** which requires tha
 },
 ```
 
-We can test everything is working by starting our application:
+Using our test environment, we can test the application before we create the container:
 
 ```bash
 > cd ~/project2
@@ -234,9 +258,11 @@ We can test everything is working by starting our application:
 > npm start
 ```
 
-You can now navigate to (http://localhost:7788) and see the app running with our base message. YOu can use a tool like Postman or cURL to navigate to our API and check that it is working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
+You can now navigate to (http://localhost:7788) and see the app running with our base message. You can use a tool like Postman or cURL to navigate to our API and check that it is working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
 
 Close the app with **ctrl-c** when you've finished testing.
+
+## Dockerizing the App
 
 Getting the application into a container is now simple:
 
@@ -265,7 +291,7 @@ Once again, you can now navigate to (http://localhost:7788) and see the app runn
 
 ### Exercise 3 - Container Naming and Versioning
 
-If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to let us advertise the container name and versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is really a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
+If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to advertise the container name and versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is essentially a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
 
 ```bash
 > docker tag Kitematic/hello-world-nginx newnginx
@@ -277,11 +303,11 @@ newnginx                      latest              fa9a3bb406d3        4 months a
 othernginx                    latest              fa9a3bb406d3        4 months ago        7.909 MB
 ```
 
-You will see the new entries in the images list. What you can also see is that the UUID for the image is the same for all of the entries.
+You will see the new entries in the images list. You can also see is that the UUID for the image is the same for all of the entries.
 
 ![Exercise 3 demo A](/exercises/exercise3/demoA.gif)
 
-Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and four parts (depending on usage); the registry location (optional), the user account (optional), the registry name, and the version tag (optional):
+Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and four parts: the registry location (optional), the user account (optional), the registry name, and the version tag (optional):
 
 ```
 [<registry location>/][<author name>/]<image name>:<version tag>
@@ -303,19 +329,26 @@ Docker operates a somewhat open approach to versioning. Legitimate version tags 
 - JumpingJaguar
 - jhlkjhjgi7t673w
 
-This means you have quite a lot of freedom to use which ever scheme you prefer to version your images. Generally it's easier to follow [SemVer](http://www.semver.org) but since you can have more than one tag per image, you can be creative. For example, the **node** container we have been using is tagged **onbuild** which refers to the latest on-build version of the image. It could be version 2.0, 2.1, or 55.1 under the hood but you have an easy reference point to go and get the latest version of the **onbuild** versions. This is similar to the **latest** tag where it essentially 'floats' to the latest uploaded version that either specifies latest or doesn't specify a tag. You do need to put some thought into how you are going to use these tags as not considering what happens with **latest** etc may have bad consequences for your consumers when they get unexpected versions. If you're consuming a container and you don't want to risk changes between pulls, it's best to fix the version of an image that you want.
+This means you have quite a lot of freedom to use which ever scheme you prefer to version your images. Generally it's easier to follow [SemVer](http://www.semver.org) but since you can have more than one tag per image, you can be creative. For example, the **node** container we have been using is tagged **onbuild** which refers to the latest on-build version of the image, not always the latest overall image. It could be version 2.0, 2.1, or 55.1 under the hood but you have an easy reference point to go and get the latest version of the **onbuild** versions. This is similar to the **latest** tag where it essentially floats to the latest uploaded version that either specifies latest or doesn't specify a tag. You do need to put some thought into how you are going to use these tags as not considering what happens with **latest** etc may have bad consequences for your consumers when they get unexpected versions. 
 
+If you're consuming a container and you don't want to risk changes between pulls, it's best to fix the version of an image that you want. You would do this in your Dockerfile:
+
+```
+FROM node:4.2.2-onbuild
+```
+
+The registry you're pulling the image from should list the tags you can pull from. 
 
 ### Exercise 4 - Registering our Container
 
-TO make use of our container we need to have a way of moving it off our box. We could ask users to clone the application repository and build the container on their machine but that risks introducing change and adds a few irritating steps for the user. Our alternative is to use a Docker Registry to store the image and let use retrieve it when we need it. We've already been using a registry in the form of the Docker Hub, Docker's online Registry that stores all of the containers we've been pulling down.
+To make use of our container we need to have a way of moving it off our box. We could ask users to clone the application repository and build the container on their machine but that risks introducing change and adds a few irritating steps for the user. Our alternative is to use a Docker Registry to store the image and let use retrieve it when we need it. We've already been using a registry in the form of the **Docker Hub**, Docker's online Registry that stores all of the containers we've been pulling down.
 
 There is a good chance we don't want to use a public Registry if we're working on private projects We could pay for private storage of course, and there is a lot of benefit to this. It may not fall under your security policy, however. For this, we can use Docker's Registry container and run a version locally. This has already been installed on the VM and should be listening on port 5000. Lets have a look:
 
 ```bash
 > docker ps -a
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS			PORTS                    NAMES
-b77b86b52c35        registry:2.1.1      "/bin/registry /etc/d"   6 days ago          Up 6 days	0.0.0.0:5000->5000/tcp   registry
+CONTAINER ID        IMAGE               COMMAND                  CREATED            STATUS			PORTS                   NAMES
+b77b86b52c35        registry:2.1.1      "/bin/registry /etc/d"   6 days ago         Up 6 days	  0.0.0.0:5000->5000/tcp  registry
 ```
 
 We can see the Registry respond if we navigate to (http://localhost:5000) on our host machine (we're exposing the port via Vagrant). As we covered in **exercise 3**, this gives us a registry name of **localhost:5000**.
