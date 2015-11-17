@@ -88,7 +88,7 @@ We've told Docker to:
 - **-t mynginx** : Tells Docker to tag the resulting image, in this case with mynginx. This is the name we will use to start the image
 - **.** : The path to look at for the Dockerfile to build
 
-![Exercise 1 Demo](/exercises/exercise1/demoA.gif)
+![Exercise 1 Demo A](/exercises/exercise1/demoA.gif)
 
 Once the build has completed, we can look in the images list, and see our new image (and it's base image):
 
@@ -108,7 +108,7 @@ mynginx
 
 From the host machine, navigate to (http://localhost:9123) and you should see your new site.
 
-![Exercise 1 Demo](/exercises/exercise1/demoB.gif)
+![Exercise 1 Demo B](/exercises/exercise1/demoB.gif)
 
 ### Exercise 2 - Creating a API with Node.JS and Docker
 
@@ -234,7 +234,7 @@ We can test everything is working by starting our application:
 > npm start
 ```
 
-You can now navigate to (http://localhost:7788) and see the app running with our base message. YOu can use a tool like Postman or cURL to navigate to our API and check thats working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
+You can now navigate to (http://localhost:7788) and see the app running with our base message. YOu can use a tool like Postman or cURL to navigate to our API and check that it is working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
 
 Close the app with **ctrl-c** when you've finished testing.
 
