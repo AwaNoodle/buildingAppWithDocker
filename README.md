@@ -34,7 +34,7 @@ For all exercises, you will need to remote into the virtual machine created by V
 > vagrant ssh
 ```
 
-You can exit back out by typing **exit** at the console. 
+You can exit back out by typing **exit** at the console.
 
 ### Exercise 1 - Adding Static Data using an Existing Image
 
@@ -155,7 +155,7 @@ To make it easier to develop our API, we can use Express.js to give us a mechani
 > npm install express --save
 ```
 
-The command is telling NPM to bring down the Express.JS package, it's dependencies (if any), and save them locally to the project. You can look in the **node_modules** folder  thats just appeared in your project to see what's been installed. This is really useful to keep all of our modules next to our app rather than install somewhere on our machine. 
+The command is telling NPM to bring down the Express.JS package, it's dependencies (if any), and save them locally to the project. You can look in the **node_modules** folder  thats just appeared in your project to see what's been installed. This is really useful to keep all of our modules next to our app rather than install somewhere on our machine.
 
 ![Exercise 2 Demo A](/exercises/exercise2/demoA.gif)
 
@@ -260,6 +260,8 @@ Using our test environment, we can test the application before we create the con
 
 You can now navigate to (http://localhost:7788) and see the app running with our base message. You can use a tool like Postman or cURL to navigate to our API and check that it is working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
 
+![Exercise 2 Demo B](/exercises/exercise2/demoB.gif)
+
 Close the app with **ctrl-c** when you've finished testing.
 
 ## Dockerizing the App
@@ -329,7 +331,7 @@ Docker operates a somewhat open approach to versioning. Legitimate version tags 
 - JumpingJaguar
 - jhlkjhjgi7t673w
 
-This means you have quite a lot of freedom to use which ever scheme you prefer to version your images. Generally it's easier to follow [SemVer](http://www.semver.org) but since you can have more than one tag per image, you can be creative. For example, the **node** container we have been using is tagged **onbuild** which refers to the latest on-build version of the image, not always the latest overall image. It could be version 2.0, 2.1, or 55.1 under the hood but you have an easy reference point to go and get the latest version of the **onbuild** versions. This is similar to the **latest** tag where it essentially floats to the latest uploaded version that either specifies latest or doesn't specify a tag. You do need to put some thought into how you are going to use these tags as not considering what happens with **latest** etc may have bad consequences for your consumers when they get unexpected versions. 
+This means you have quite a lot of freedom to use which ever scheme you prefer to version your images. Generally it's easier to follow [SemVer](http://www.semver.org) but since you can have more than one tag per image, you can be creative. For example, the **node** container we have been using is tagged **onbuild** which refers to the latest on-build version of the image, not always the latest overall image. It could be version 2.0, 2.1, or 55.1 under the hood but you have an easy reference point to go and get the latest version of the **onbuild** versions. This is similar to the **latest** tag where it essentially floats to the latest uploaded version that either specifies latest or doesn't specify a tag. You do need to put some thought into how you are going to use these tags as not considering what happens with **latest** etc may have bad consequences for your consumers when they get unexpected versions.
 
 If you're consuming a container and you don't want to risk changes between pulls, it's best to fix the version of an image that you want. You would do this in your Dockerfile:
 
@@ -337,7 +339,7 @@ If you're consuming a container and you don't want to risk changes between pulls
 FROM node:4.2.2-onbuild
 ```
 
-The registry you're pulling the image from should list the tags you can pull from. 
+The registry you're pulling the image from should list the tags you can pull from.
 
 ### Exercise 4 - Registering our Container
 
