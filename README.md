@@ -282,13 +282,18 @@ Once it's built you should be able to see the new image:
 Now we run it as any other container:
 
 ```bash
-> docker run -d -rm -p 7788:7788 --name testingNode mynodeapp
+> docker run -d -p 7788:7788 --name testingNode mynodeapp
 ```
 
-Once again, you can now navigate to (http://localhost:7788) and see the app running. When you're finished, stop the container. It will clear itself up because we added the **-rm** switch to remove on exit:
+Once again, you can now navigate to (http://localhost:7788) and see the app running. 
+
+![Exercise 2 Demo C](/exercises/exercise2/demoC.gif)
+
+When you're finished, stop and remove the container:
 
 ```bash
 > docker stop testingNode
+> docker rm testingNode
 ```
 
 ### Exercise 3 - Container Naming and Versioning
@@ -386,7 +391,7 @@ To demonstrate the process of using the registry, we need to remove our local co
 We can then pull the image from the Registry almost the same as we do with any other image:
 
 ```bash
-> docker run -d -rm -p 7788:7788 --name testingRegistry localhost:5000/mynodeapp
+> docker run -d -p 7788:7788 --name testingRegistry localhost:5000/mynodeapp
 ```
 
 Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. If we were to run **localhost:5000/mynodeapp:0.0.1** we would end up with the same result. You can stop and remove your app as normal.
@@ -422,9 +427,9 @@ Let's clean up our images:
 ...and test out the old and new versions:
 
 ```bash
-> docker run -d -rm -p 7788:7788 --name testingRegistry_latest localhost:5000/mynodeapp
-> docker run -d -rm -p 7789:7788 --name testingRegistry_old localhost:5000/mynodeapp:0.0.1
-> docker run -d -rm -p 7790:7788 --name testingRegistry_new localhost:5000/mynodeapp:0.0.2
+> docker run -d -p 7788:7788 --name testingRegistry_latest localhost:5000/mynodeapp
+> docker run -d -p 7789:7788 --name testingRegistry_old localhost:5000/mynodeapp:0.0.1
+> docker run -d -p 7790:7788 --name testingRegistry_new localhost:5000/mynodeapp:0.0.2
 ```
 
 You can make a call to each of the containers to see if it's worked:
