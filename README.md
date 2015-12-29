@@ -107,7 +107,7 @@ Let's start up our container:
 > docker run -d -p 9123:80 --name testingChanges mynginx
 ```
 
-From the host machine, navigate to (http://localhost:9123) and you should see your new site.
+From the host machine, navigate to [http://localhost:9123](http://localhost:9123) and you should see your new site.
 
 ![Exercise 1 Demo B](/exercises/exercise1/demoB.gif)
 
@@ -115,7 +115,7 @@ From the host machine, navigate to (http://localhost:9123) and you should see yo
 
 For this exercise we are going to create a new application and host it in a container. We will use Node.JS and Express.JS to create a simple API.
 
-Normally, we would need to have provisioned a machine with Node to be able to run the application. We could do a similar process with Docker by taking a Linux base, like Busybox, an adding Node and then our application. Easier still, we will choose one of the pre-built Node images and avoid the extra work. This would be similar to our previous example where we used the nginx base and added our files via Dockerfile.
+Normally, we would need to have provisioned a machine with Node to be able to run the application. We could do a similar process with Docker by taking a Linux base, like Busybox, and adding Node and then our application. Easier still, we will choose one of the pre-built Node images and avoid the extra work. This would be similar to our previous example where we used the nginx base and added our files via Dockerfile.
 
 However, we have an opportunity to reduce our workload further and use an **on-build** image. **On-build** images are base images that are set to perform an action only when they are built as part of another Dockerfile. This means we could create a base with a common functionality and then fill in the gaps later when we produce a new image. Since we're not really interested in sorting out installing and running Node, just interested in he files that make up the application, we are going to make use of one of these images.
 
