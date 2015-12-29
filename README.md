@@ -9,6 +9,7 @@ A set of exercises to build a simple Docker application
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 - Some knowledge on using Vi or Nano, or a text editor which will let you alter line endings, such as [Sublime](https://www.sublimetext.com/)
 - A tool like [Postman](https://www.getpostman.com/) will be really handy
+- A local clone of this repository
 
 ## The Demo Environment
 
@@ -317,6 +318,12 @@ When you're finished, stop and remove the container:
 > docker rm testingNode
 ```
 
+For this exercise we have:
+- Created a simple Node.JS application which exposed an API
+- Added the API to a Docker Image
+- Made use of the **on build** features of Docker to reduce the amount of configuration we need to do
+- Started and used the application local to the VM and as a Docker container
+
 ### Exercise 3 - Container Naming and Versioning
 
 If we are going to produce more than a single container, we will need to think about how to version them. Docker lets us tag images with strings to advertise the container name and versions. We've been doing this already via the **-t** operator when we've been building. If we left this out, our image would be a user-unfirendly UUID. So the tag is essentially a string pointer to a UUID of our image. As it's just a pointer, we can also have multiple tags on a single image:
@@ -445,7 +452,7 @@ Let's clean up our images:
 > docker rmi localhost:5000/mynodeapp:0.0.2
 ```
 
-...and test out the old and new versions:
+...and test out the old and new versions (make sure you follow the port definitions closely or you could get a conflict):
 
 ```bash
 > docker run -d -p 7788:7788 --name testingRegistry_latest localhost:5000/mynodeapp
