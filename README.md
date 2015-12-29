@@ -338,13 +338,13 @@ You will see the new entries in the images list. You can also see is that the UU
 Things aren't quite as simple as they seem however. The way we tag the image actually composes between one and four parts: the registry location (optional), the user account (optional), the registry name, and the version tag (optional):
 
 ```
-[<registry location>/][<author name>/]<image name>:<version tag>
+[<registry location>/][<author name>/]<image name>[:<version tag]
 ```
 
 - **Registry** is the location of the registry to store the image. The field is optional and by default it will be omitted and the registry will be set to Docker Hub (unless you have set an alternative default via Docker). It can also be the location of another registry (i.e. localhost:5000).
 - **Username** is the name of the account in the registry to store the image under. Commonly this will be the same as an account you are using on the registry you are using. The field is optional.
 - **Name** is the container name
-- **Tag** is the version information. If this isn't specified then it will be 'latest'
+- **Tag** is the version information. If this isn't specified then it will be set to 'latest'
 
 So:
 - **mark/nginx:0.0.2** would represent a container on Docker Hub that is authored by the account **mark**, is for the **nginx** container, and is for version **0.0.2**
