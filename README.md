@@ -7,7 +7,7 @@ A set of exercises to build a simple Docker application
 - [Vagrant](https://www.vagrantup.com/downloads.html)
 	- Vagrant requires an SSH client. Try [cmder (Windows)](http://cmder.net/) or installing [msysgit (Windows)](https://git-for-windows.github.io/) if you don't have one installed
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-- Some knowledge on using Vi or a text editor which will let you alter line endings, such as [Sublime](https://www.sublimetext.com/)
+- Some knowledge on using Vi or Nano, or a text editor which will let you alter line endings, such as [Sublime](https://www.sublimetext.com/)
 - A tool like [Postman](https://www.getpostman.com/) will be really handy
 
 ## The Demo Environment
@@ -141,12 +141,20 @@ We still need a Dockerfile to specify the base image that we want to build. In y
 
 Note: we are using the **~** folder for this example because Node will try to alter the file permissions later on. This does not work so well on /vagrant if you're on Windows.
 
-The image we are going to use is the **Node onbuild official** so we need to add this as the base. We also need to add the port our application listens on. Firstly, open the new Dockerfile in your editor and add:
+The image we are going to use is the **Node onbuild official** so we need to add this as the base. We also need to add the port our application listens on. Firstly, open the new Dockerfile in an editor (we're going to use [Nano](http://www.nano-editor.org/))
+
+```bash
+> nano ~/project2/Dockerfile
+```
+
+Once the file is open, add:
 
 ```
 FROM node:onbuild
 EXPOSE 7788
 ```
+
+To save and exit, press *ctrl-x*. You'll be asked if you want to save (press **Y**) and then the filename to save (press the Enter key).
 
 We now need to create our application. If we look in the node:onbuild ([Dockerfile](https://github.com/nodejs/docker-node/blob/04df8682a438b0ced8f530ab562f5197595e0cbb/4.2/onbuild/Dockerfile)) we can see that it's expecting our application to have a **project.json** file next to the Dockerfile. This file, like a .csproj, lists information like version, name, dependencies, and scripts to execute. Thankfully, most of this is managed for us using Node Package Manager (NPM):
 
