@@ -46,7 +46,7 @@ For this exercise, we are going to use the **Kitematic/hello-world-nginx** conta
 VOLUME ["/website_files"]
 ```
 
-We are going to place our own content in this location. Firstly create a new folder for your project. Inside, create a **content** folder and add a **index.html** file:
+We are going to place our own content in this location. Firstly create a new folder for your project. Inside, create a **content** folder and add a **index.html** file using [Touch](https://en.wikipedia.org/wiki/Touch_%28Unix%29):
 
 ```bash
 > cd /vagrant
@@ -285,7 +285,7 @@ Now we run it as any other container:
 > docker run -d -p 7788:7788 --name testingNode mynodeapp
 ```
 
-Once again, you can now navigate to (http://localhost:7788) and see the app running. 
+Once again, you can now navigate to (http://localhost:7788) and see the app running.
 
 ![Exercise 2 Demo C](/exercises/exercise2/demoC.gif)
 
