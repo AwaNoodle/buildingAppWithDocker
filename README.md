@@ -374,6 +374,8 @@ FROM node:4.2.2-onbuild
 
 The registry you're pulling the image from should list the tags you can pull from.
 
+For this exercise we've looked at how Docker versions it's images. We will put this into practice for Exercise 5.
+
 ### Exercise 4 - Registering our Container
 
 To make use of our container we need to have a way of moving it off our box. We could ask users to clone the application repository and build the container on their machine but that risks introducing change and adds a few irritating steps for the user. Our alternative is to use a Docker Registry to store the image and let use retrieve it when we need it. We've already been using a registry in the form of the **Docker Hub**, Docker's online Registry that stores all of the containers we've been pulling down.
@@ -424,6 +426,12 @@ We can then pull the image from the Registry almost the same as we do with any o
 
 Navigating to (http://localhost:7788) will again show you your app. If you look in the local images (**docker images**), you will see your image. If we were to run **localhost:5000/mynodeapp:0.0.1** we would end up with the same result. You can stop and remove your app as normal.
 
+For this exercise we've:
+
+- Tagged our previously created images with version numbers
+- Added the tagged images to our local Registry
+- Pulled one of our images from our local Registry to run it in our VM
+
 ### Exercise 5 - Container Updates
 
 Let's put all of this together an create a new version of our application.
@@ -464,3 +472,7 @@ You can make a call to each of the containers to see if it's worked:
 - [Current Latest](http://localhost:7788/api/whereis/tim)
 - [Old](http://localhost:7789/api/whereis/tim)
 - [New](http://localhost:7790/api/whereis/tim)
+
+For our last exercise we have:
+- Updated our application and uploaded a new version to the Registry
+- Pulled down and ran multiple versions of our application
