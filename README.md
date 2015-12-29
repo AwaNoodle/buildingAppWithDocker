@@ -274,7 +274,7 @@ Using our test environment, we can test the application before we create the con
 > npm start
 ```
 
-You can now navigate to (http://localhost:7788) and see the app running with our base message. You can use a tool like Postman or cURL to navigate to our API and check that it is working. Try navigating to (http://localhost:7788/api/whereis/tim) and (http://localhost:7788/api/whereis/luke) and check the response codes.
+You can now navigate to [http://localhost:7788](http://localhost:7788) and see the app running with our base message. You can use a tool like Postman or cURL to navigate to our API and check that it is working. Try navigating to [http://localhost:7788/api/whereis/tim](http://localhost:7788/api/whereis/tim) and [http://localhost:7788/api/whereis/luke](http://localhost:7788/api/whereis/luke) and check the response codes.
 
 ![Exercise 2 Demo B](/exercises/exercise2/demoB.gif)
 
