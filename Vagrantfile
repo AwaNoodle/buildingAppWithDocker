@@ -26,7 +26,7 @@ $installLatestDocker = <<END
 END
 
 $pullDemoItems = <<END
-    docker pull Kitematic/hello-world-nginx
+    docker pull kitematic/hello-world-nginx
     docker pull registry:2.1.1
     docker pull node:onbuild
 END
