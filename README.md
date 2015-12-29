@@ -131,7 +131,7 @@ However, we have an opportunity to reduce our workload further and use an **on-b
 
 ### Setting Up
 
-We still need a Dockerfile to specify the base image that we want to build. Create a new folder and Dockerfile for the project:
+We still need a Dockerfile to specify the base image that we want to build. In your VM's home folder, create a new folder and Dockerfile for the project (**cd ~** will always move you to your home folder):
 
 ```bash
 > cd ~
