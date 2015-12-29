@@ -107,7 +107,12 @@ Let's start up our container:
 > docker run -d -p 9123:80 --name testingChanges mynginx
 ```
 
-From the host machine, navigate to [http://localhost:9123](http://localhost:9123) and you should see your new site.
+From the host machine, navigate to [http://localhost:9123](http://localhost:9123) and you should see your new site. When your finished, you can stop and remove the site (you can leave it running too, it's just if you want to be tidy):
+
+```bash
+> docker stop mynginx
+> docker rm mynginx
+```
 
 ![Exercise 1 Demo B](/exercises/exercise1/demoB.gif)
 
